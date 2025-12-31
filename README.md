@@ -67,7 +67,7 @@
 
 ## 🎯 Overall Takeaway
 
-Market sentiment significantly influences trading intensity, risk-taking behavior, and volatility. **Fear and Greed periods** drive larger trades, higher fees, and extreme outcomes, while a small number of traders dominate activity—often entering aggressively from zero initial positions.
+Market sentiment significantly influences trading intensity, risk-taking behavior, and volatility. **Fear and Greed periods** drive larger trades, higher fees, and extreme outcomes. 
 
 ---
 

@@ -1,247 +1,223 @@
-# Trader-Behavior-Insights
-Crypto Trading Analytics and Behavioral Archetypes
+# 📊 Crypto Trading Analytics & Behavioral Archetypes
 
-This project explores cryptocurrency trading behavior by combining market sentiment (Fear & Greed Index) with historical trading data to uncover:
+A data-driven exploration of cryptocurrency trading behavior combining market sentiment analysis with historical trading patterns to uncover performance metrics, behavioral biases, and distinct trader archetypes.
 
-Performance patterns
+## 🎯 Project Overview
 
-Behavioral biases
+This project analyzes cryptocurrency trading behavior by integrating:
+- **Market Sentiment Data**: Fear & Greed Index
+- **Historical Trading Records**: Transaction-level data
 
-Distinct trader archetypes
+**Objectives:**
+- Identify performance patterns across market conditions
+- Uncover behavioral biases in trading decisions
+- Segment traders into distinct behavioral archetypes
+- Generate actionable trading strategy recommendations
 
-The objective is to generate actionable insights and strategy recommendations for navigating different market conditions.
+---
 
-Methodology
-1. Data Acquisition & Preprocessing
-Datasets Used
+## 📋 Table of Contents
 
-Fear & Greed Index dataset
+- [Methodology](#methodology)
+- [Key Insights](#key-insights)
+- [Trader Archetypes](#trader-archetypes)
+- [Strategy Recommendations](#strategy-recommendations)
+- [Installation & Usage](#installation--usage)
+- [Data Schema](#data-schema)
+- [Results Visualization](#results-visualization)
 
-Columns: timestamp, value, classification, date
+---
 
-Historical trading dataset
+## 🔬 Methodology
 
-Detailed trade-level transaction records
+### 1. Data Acquisition & Preprocessing
 
-Cleaning & Transformation
-Fear & Greed Index
+#### **Datasets Used**
 
-Dropped the value and timestamp columns
+**Fear & Greed Index Dataset**
+- Columns: `timestamp`, `value`, `classification`, `date`
 
-Merged:
+**Historical Trading Dataset**
+- Detailed trade-level transaction records
 
-Extreme Fear → Fear
+#### **Data Cleaning & Transformation**
 
-Extreme Greed → Greed
+**Fear & Greed Index:**
+```python
+# Dropped: value, timestamp columns
+# Merged classifications:
+#   - Extreme Fear → Fear
+#   - Extreme Greed → Greed
+# Converted date to datetime (date component only)
+```
 
-Converted date to datetime and extracted only the date component
+**Historical Trading Data:**
+```python
+# Dropped redundant columns:
+#   - Transaction Hash
+#   - Unix Timestamp
+# Converted Timestamp IST to datetime
+# Extracted date component
+```
 
-Historical Trading Data
+#### **Data Integration**
+- Performed **right merge** on `Date`
+- Ensured every trade has an associated market sentiment label
+- Final dataset: `final_df`
 
-Dropped redundant columns:
+---
 
-Transaction Hash
+### 2. Performance & Behavioral Feature Engineering
 
-Unix Timestamp
+For each trading account, computed:
 
-Converted Timestamp IST to datetime
+| Metric | Description |
+|--------|-------------|
+| **Total PnL** | Cumulative profit/loss |
+| **Win Rate** | Percentage of profitable trades |
+| **Avg Trade Size** | Average position size (USD) |
+| **Total Trades** | Number of transactions |
+| **Winning Trades** | Count of profitable positions |
+| **Long/Short Bias** | Buy vs Sell ratio |
 
-Extracted date component
+#### **Sentiment Exposure Analysis**
+Calculated proportion of trades executed under:
+- Fear
+- Greed  
+- Neutral
 
-Data Integration
+Used dummy variable encoding for categorical analysis.
 
-Performed a right merge on Date
+---
 
-Ensured every trade is associated with a market sentiment label
+### 3. Trader Segmentation & Clustering
 
-Final dataset: final_df
+#### **Feature Preparation**
+- Created `trader_features` summarizing all metrics per account
 
-2. Performance & Behavioral Feature Engineering
+#### **Feature Scaling**
+- Applied `StandardScaler` for normalization
 
-For each trading account, the following metrics were computed:
+#### **Clustering Algorithm**
+- Used **Silhouette Score** to determine optimal cluster count
+- Identified **7 distinct trader archetypes** using K-Means
 
-Total Profit & Loss (PnL)
+#### **Archetype Analysis**
+- Analyzed cluster centroids (scaled & unscaled)
+- Evaluated:
+  - Performance metrics
+  - Behavioral patterns
+  - Sentiment exposure
 
-Win rate
+#### **Visualization**
+- Applied PCA (2D reduction)
+- Generated scatter plot of trader archetypes
 
-Average trade size (USD)
+---
 
-Total number of trades
+## 💡 Key Insights
 
-Number of winning trades
+### 1. Performance Variation by Market Sentiment
 
-Long/short bias (Buy vs Sell ratio)
+| Sentiment | Total PnL | Win Rate | Avg Loss/Trade | Total Loss |
+|-----------|-----------|----------|----------------|------------|
+| **Greed** | $4.87M | 42.03% | — | -$1.33M |
+| **Fear** | $4.10M | — | -$196.35 | — |
+| **Neutral** | $1.29M | 39.70% | -$121.73 | — |
 
-Sentiment Exposure
+**📌 Key Takeaways:**
+- **Greed**: Highest opportunity + highest risk
+- **Fear**: Skilled traders can profit despite volatility
+- **Neutral**: Low-momentum market with minimal activity
 
-Calculated proportion of trades under:
+---
 
-Fear
+### 2. Behavioral Adaptation to Sentiment
 
-Greed
-
-Neutral
-
-Used dummy variable encoding
-
-3. Trader Segmentation & Analysis
-Feature Preparation
-
-Created trader_features summarizing all engineered metrics per account
-
-Feature Scaling
-
-Applied StandardScaler to normalize numerical values
-
-Clustering
-
-Used Silhouette Score to determine optimal clusters
-
-Identified 7 trader archetypes using K-Means
-
-Archetype Interpretation
-
-Analyzed cluster centroids (scaled & unscaled) to understand:
-
-Performance
-
-Behavior
-
-Sentiment exposure
-
-Visualization
-
-Applied PCA (2D reduction)
-
-Generated scatter plot of trader archetypes
-
-Key Insights
-1. Performance Variation by Market Sentiment
-Greed
-
-Highest total PnL: $4.87M
-
-Highest win rate: 42.03%
-
-Highest total loss: –$1.33M
-➡ Indicates high opportunity + high risk
-
-Fear
-
-Largest average loss per losing trade: –$196.35
-
-Still strong total PnL: $4.10M
-➡ Skilled traders can profit despite volatility
-
-Neutral
-
-Lowest activity and profitability
-
-Total PnL: $1.29M
-
-Win rate: 39.70%
-
-Avg loss: –$121.73
-➡ Represents low-momentum market
-
-2. Behavioral Adaptation to Sentiment
-Trade Frequency
-
-Greed → 90,295 trades
-
-Fear → 83,237 trades
-
+#### **Trade Frequency**
+```
+Greed   → 90,295 trades
+Fear    → 83,237 trades
 Neutral → 37,686 trades
+```
 
-Position Sizes
+#### **Position Sizing**
+- **Highest during Fear**: $7,182
+- Indicates fewer trades but larger conviction bets
 
-Highest during Fear: $7,182
-➡ Fewer trades but larger conviction bets
+#### **Long/Short Bias**
+- Slight **SELL bias** in both Fear & Greed
+- **Suggests:**
+  - Profit-taking during rallies
+  - Defensive positioning in downturns
 
-Long/Short Bias
+---
 
-Slight SELL bias in both Fear & Greed
-➡ Suggests:
+## 👥 Trader Archetypes (7 Clusters)
 
-Profit-taking in rallies
+### Cluster 6: High-Profit, Large-Bet Traders
+- **Avg PnL**: $1.87M
+- **Avg Trade Size**: $10K
+- **Profile**: High-conviction, large position traders
 
-Defensive positioning in downturns
+### Cluster 4: High-Activity, Fear-Prone Traders
+- **Avg Trades**: 30,688
+- **Avg PnL**: $888K
+- **Profile**: Strong Fear exposure, high-frequency trading
 
-3. Trader Archetypes (7 Clusters)
-High-Profit, Large-Bet Traders (Cluster 6)
+### Cluster 0: High-Win-Rate, Greed-Oriented Traders
+- **Win Rate**: 59.7%
+- **Avg PnL**: $259K
+- **Profile**: Strong Greed exposure, consistent profitability
 
-Avg PnL: $1.87M
+### Remaining Clusters
+Represent diverse combinations of:
+- Win rate variance
+- Trade size preferences
+- Long/short positioning
+- Sentiment-driven strategies
 
-Avg trade size: $10K
+---
 
-High-Activity, Fear-Prone Traders (Cluster 4)
+## 🎯 Strategy Recommendations
 
-Avg trades: 30,688
+### 1. Dynamic Position Sizing in Fearful Markets
 
-Avg PnL: $888K
+#### **Rule of Thumb**
+✅ High-performing traders may increase position sizes on high-conviction trades  
+✅ Must combine with strict risk management (tight stop-losses)  
+⚠️ Low-PnL traders should remain cautious
 
-Strong Fear exposure
+#### **Justification**
+- High-PnL traders maintain profitability in Fear ($66.38 avg PnL)
+- Largest position sizes occur during Fear ($7,182)
+- Highest losing-trade loss: -$196.35
 
-High-Win-Rate, Greed-Oriented Traders (Cluster 0)
+---
 
-Win rate: 59.7%
+### 2. Optimized Trading in Greedy Markets
 
-Avg PnL: $259K
+#### **Rule of Thumb**
+✅ Increase trading activity during Greed  
+✅ Consider profit-taking on longs  
+✅ Careful with short positions  
+⚠️ Low-profit traders should manage downside risk
 
-Strong Greed exposure
+#### **Justification**
+- Highest trade frequency: 90,295 trades
+- Highest total PnL: $4.87M
+- Slight SELL bias observed
+- Largest total losses: -$1.33M
 
-Remaining Clusters
+---
 
-Represent combinations of:
 
-Win rate
 
-Trade size
 
-Long/short bias
 
-Sentiment exposure
-➡ Demonstrating diverse trading behaviors
 
-Strategy Recommendations
-1. Dynamic Position Sizing in Fearful Markets
 
-Rule of Thumb
 
-High-performing traders may increase position sizes on high-conviction trades
+---
 
-Must combine with strict risk management (tight stop-losses)
-
-Low-PnL traders should remain cautious
-
-Justification
-
-High-PnL traders stay profitable in Fear ($66.38 avg PnL)
-
-Largest position sizes occur in Fear ($7,182)
-
-Highest losing-trade loss: –$196.35
-
-2. Optimized Trading in Greedy Markets
-
-Rule of Thumb
-
-Increase trading activity during Greed
-
-Consider:
-
-Profit-taking on longs
-
-Careful short positions
-
-Low-profit traders should manage downside risk
-
-Justification
-
-Highest trade frequency: 90,295
-
-Highest total PnL: $4.87M
-
-Slight SELL bias observed
-
-Largest total losses: –$1.33M
+**⭐ If you find this project useful, please consider giving it a star!**
